@@ -1,11 +1,13 @@
 import React from 'react';
 import Card from './Card';
+import Loader from 'react-loader-spinner';
 
 class UserList extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            userList : []
+            userList : [],
+            loading: true
         }
     }
 
@@ -19,7 +21,8 @@ class UserList extends React.Component{
             .then((response) => response.json())
             .then((response) => {
                     this.setState({
-                        userList: response
+                        userList: response,
+                        loading: false
                     })
                     window.localStorage.setItem("userList", JSON.stringify(this.state.userList));
                 }
@@ -59,7 +62,7 @@ class UserList extends React.Component{
         const age = ["age >= 20", "age < 30", "length of full name >= 10"]
         return(
             <div>
-                <div className="row filter">
+                <div className="row row-filter">
                     <select onChange={this.handleChange}>
                         <option>Select Filter</option>
                         {age.map(item => {
@@ -69,12 +72,15 @@ class UserList extends React.Component{
                         })}                        
                     </select>
                 </div>
-                <div className="row">
-                    {this.state.userList.map(item => {
-                        return(
-                            <Card item={item} />
-                        )
-                    })}
+                <div className="row row-data">
+                    {this.state.loading
+                        ?<Loader type="Oval" color="#00BFFF" height={80} width={80}/>
+                        :this.state.userList.map(item => {
+                            return(
+                                <Card item={item} />
+                            )
+                        })
+                    }                    
                 </div>
             </div>
         )
